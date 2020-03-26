@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
    inputWrapper: {
       flex: 0,
       width: '100%',
+      marginVertical: height > 700 ? '2%' : '.1%',
    },
    input: { height: 50 },
    inputBorder: {

@@ -79,9 +79,9 @@ const CustomInput = ({
 };
 const styles = StyleSheet.create({
    contentContainer: {
-      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+      marginVertical: '2%',
    },
    container: {
       flexDirection: 'row',
