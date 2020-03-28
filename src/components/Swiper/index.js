@@ -12,8 +12,6 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const { width } = Dimensions.get('window');
 const CustomSwiper = ({ images }) => {
-   console.log('images', images);
-
    return (
       <View style={styles.container}>
          <Swiper

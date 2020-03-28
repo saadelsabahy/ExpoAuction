@@ -18,7 +18,7 @@ const CountDown = ({ timerContainerStyle, date, time, play, ...res }) => {
       'seconds'
    );
 
-   console.log('timer seconds', seconds, play);
+   // console.log('timer seconds', seconds, play);
 
    return (
       <View style={[styles.conntainer, timerContainerStyle]}>

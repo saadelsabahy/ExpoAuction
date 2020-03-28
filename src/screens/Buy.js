@@ -92,7 +92,6 @@ const Buy = ({ navigation, route }) => {
       dispatch(getItemData(itemId));
       dispatch(hideTabbar());
       return () => {
-         console.log('out2');
          dispatch(decreaseSubscribers(itemId));
          dispatch(showTabbar());
       };
@@ -101,7 +100,6 @@ const Buy = ({ navigation, route }) => {
    useEffect(() => {
       let end = moment(finish, 'LT').diff(moment(), 'milliseconds');
 
-      console.log('milisecods', end);
       let closeAuction = setTimeout(async () => {
          await firebase
             .database()
@@ -320,6 +318,10 @@ const Buy = ({ navigation, route }) => {
                               }
                               value={bidValue}
                               editable={disableInput}
+                              contentContainerStyle={{
+                                 flex: 0,
+                                 width: '70%',
+                              }}
                            />
                            <CustomButton
                               buttonTitle="bid"

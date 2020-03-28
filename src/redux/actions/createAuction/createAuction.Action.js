@@ -44,6 +44,15 @@ export const onUploadProduct = (
    if (validation) {
       try {
          dispatch({ type: UPLOAD_PRODUCT_SPINNER });
+         const response = await fetch(images[0].uri);
+         const blob = await response.blob();
+         let uploadSelectedImage = await firebase
+            .storage()
+            .ref()
+            .child(`image${Math.floor(Math.random() * 10)}`)
+            .put(blob);
+         let imageUrl = await uploadSelectedImage.ref.getDownloadURL();
+
          const uploadProductResponse = await firebase
             .database()
             .ref('/products')
@@ -54,7 +63,7 @@ export const onUploadProduct = (
                startTime: moment(startTime).format('LT'),
                endDate: moment(endDate).format('DD/MM/YYYY'),
                endTime: moment(endTime).format('LT'),
-               images,
+               images: [{ uri: imageUrl }],
                paid: false,
                subScribers: 0,
                currentPrice: '',

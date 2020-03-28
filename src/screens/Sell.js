@@ -107,6 +107,7 @@ const Sell = () => {
          aspect: [4, 3],
          quality: 1,
          allowsMultipleSelection: true,
+         base64: true,
       });
 
       if (!result.cancelled) {
@@ -115,6 +116,7 @@ const Sell = () => {
          dispatch(updateImages(selectedImages));
       }
    };
+
    return (
       <View style={styles.container}>
          <Header headerText={'Sell'} containerStyle={styles.headerContainer} />

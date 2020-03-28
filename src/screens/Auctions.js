@@ -24,7 +24,6 @@ const Auctions = ({ navigation, route }) => {
       getCarsError: state.Auction.getCarsError,
       cars: state.Auction.cars,
    }));
-   console.log(getCarsLoading);
 
    useEffect(() => {
       dispatch(getAuctionItems());

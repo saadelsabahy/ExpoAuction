@@ -44,7 +44,7 @@ const WinnerModal = ({
                   onIconPressed={onBackdropPress}
                />
             </View>
-            <SvgCongratulation onPress={onBackdropPress} />
+            <SvgCongratulation onPress={onBackdropPress} sty={{ flex: 1 }} />
          </Modal>
       </View>
    );

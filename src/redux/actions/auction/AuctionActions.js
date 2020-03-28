@@ -19,12 +19,15 @@ export const getAuctionItems = () => async dispatch => {
       const source = await firebase.database().ref('/products');
       source.on('value', data => {
          if (data.val()) {
+            let items = Object.entries(data.val()).map(item => ({
+               ...item[1],
+               key: item[0],
+            }));
+
+            let filterd = items.filter(item => item.paid !== true);
             dispatch({
                type: GET_AUCTION_ITEMS_SUCCESS,
-               payload: Object.entries(data.val()).map(item => ({
-                  ...item[1],
-                  key: item[0],
-               })),
+               payload: filterd.length > 0 ? filterd : [],
             });
          } else {
             dispatch({
@@ -33,9 +36,6 @@ export const getAuctionItems = () => async dispatch => {
             });
          }
       });
-      /* setTimeout(() => {
-         dispatch({ type: GET_AUCTION_ITEMS_FAILED });
-      }, 15000); */
    } catch (e) {
       console.log('get auction itemserror', e);
       dispatch({ type: GET_AUCTION_ITEMS_FAILED });
@@ -54,8 +54,6 @@ export const getItemData = itemId => async (dispatch, getState) => {
          .ref(`products/${itemId}`)
          .on('value', async data => {
             if (data.val()) {
-               console.log('item', data.val());
-
                dispatch({
                   type: GET_AUCTION_ITEM_SUCCESS,
                   payload: data.val(),
