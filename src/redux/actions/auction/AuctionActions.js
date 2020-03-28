@@ -54,12 +54,9 @@ export const handleFavoutitrItem = itemId => async (dispatch, getState) => {
             return [userId];
          } else {
             let userIndex = oldValue.indexOf(userId);
-            console.log('userIndex', userIndex);
-
             if (userIndex == -1) {
                return oldValue.push(userId);
             } else {
-               console.log('old', oldValue);
                if (oldValue.length == 1) {
                   return [];
                } else {
