@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
    View,
    Text,
@@ -6,6 +6,7 @@ import {
    Image,
    TouchableOpacity,
    Dimensions,
+   AsyncStorage,
 } from 'react-native';
 import {
    MAIN_COLOR,
@@ -31,6 +32,9 @@ const AuctionItem = ({
    startTime,
    carName,
    paid,
+   onfavouritePressed,
+   likedBy,
+   userId,
 }) => {
    return (
       <TouchableOpacity
@@ -59,6 +63,9 @@ const AuctionItem = ({
             startDate={startDate}
             startTime={startTime}
             carName={carName}
+            onfavouritePressed={onfavouritePressed}
+            likedBy={likedBy}
+            userId={userId}
          />
       </TouchableOpacity>
    );

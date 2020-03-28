@@ -6,17 +6,26 @@ import {
    ScrollView,
    FlatList,
    RefreshControl,
+   AsyncStorage,
 } from 'react-native';
 import { Header, AuctionItem, LoaderAndRetry, EmptyList } from '../components';
 import { WHITE_COLOR, SURFACE_COLOR, MAIN_COLOR } from '../constants/colors';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAuctionItems, onLogoutPressed } from '../redux/actions';
+import {
+   getAuctionItems,
+   onLogoutPressed,
+   handleFavoutitrItem,
+} from '../redux/actions';
 import { calculateTimeDifferance } from '../utils/calculateTimeDifferance';
 import { showMessage } from 'react-native-flash-message';
 import moment from 'moment';
 
 const Auctions = ({ navigation, route }) => {
    const [refreshing, setRefreshing] = useState(false);
+   const [renderList, setRenderList] = useState(false);
+   const [userId, setUserId] = useState(
+      AsyncStorage.getItem('userId', (err, res) => setUserId(res))
+   );
 
    const dispatch = useDispatch();
    const { cars, getCarsLoading, getCarsError } = useSelector(state => ({
@@ -63,7 +72,10 @@ const Auctions = ({ navigation, route }) => {
       dispatch(getAuctionItems());
       setRefreshing(false);
    };
-
+   const onfavouritePressed = async key => {
+      dispatch(handleFavoutitrItem(key));
+      setRenderList(!renderList);
+   };
    return (
       <View style={styles.container}>
          <Header
@@ -89,6 +101,7 @@ const Auctions = ({ navigation, route }) => {
                      contentContainerStyle={{
                         flexGrow: 1,
                      }}
+                     extraData={renderList}
                      data={cars}
                      keyExtractor={(item, index) => `${index}`}
                      renderItem={({
@@ -126,6 +139,9 @@ const Auctions = ({ navigation, route }) => {
                               images={images}
                               initialPrice={initialPrice}
                               paid={paid}
+                              onfavouritePressed={() => onfavouritePressed(key)}
+                              likedBy={item.likedBy ? item.likedBy : null}
+                              userId={userId}
                            />
                         );
                      }}

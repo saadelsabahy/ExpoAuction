@@ -59,7 +59,11 @@ const LoginSuccess = async (dispatch, { user }) => {
    dispatch({
       type: LOGIN_SUCCESS,
    });
-   await AsyncStorage.setItem('userToken', user.refreshToken);
+
+   await AsyncStorage.multiSet([
+      ['userToken', user.refreshToken],
+      ['userId', user.uid],
+   ]);
    Alerting('success', 'login success');
 };
 const LoginFailed = dispatch => {

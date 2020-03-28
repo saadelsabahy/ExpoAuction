@@ -114,7 +114,9 @@ const Buy = ({ navigation, route }) => {
    }, []);
 
    const onOutPressed = () => {
-      playButtonPress('bid');
+      console.log('pressed');
+
+      /* playButtonPress('bid'); */
    };
    const TimeDifferance = calculateTimeDifferance(
       startDate,

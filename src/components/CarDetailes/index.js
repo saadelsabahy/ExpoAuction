@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, AsyncStorage } from 'react-native';
 import {
    MAIN_COLOR,
    AUCTION_ITEM_COLOR,
@@ -10,6 +10,7 @@ import { CustomText } from '../customText';
 import { IconButton } from '../IconButton';
 import { Icon } from '../icon';
 import moment from 'moment';
+
 const CarDetailes = ({
    title,
    paid,
@@ -19,7 +20,9 @@ const CarDetailes = ({
    startDate,
    startTime,
    carName,
-   subscribed,
+   likedBy,
+   onfavouritePressed,
+   userId,
 }) => {
    return (
       <View style={styles.detailesContainer}>
@@ -27,10 +30,23 @@ const CarDetailes = ({
             <CustomText text={carName} textStyle={styles.title} />
             <IconButton
                type={'ionicon'}
-               iconName={!subscribed ? 'ios-star-outline' : 'md-star'}
-               iconSize={20}
-               touchableStyle={{ height: 0 }}
-               iconColor={!subscribed ? BID_INPUT_BORDER : MAIN_COLOR}
+               iconName={
+                  likedBy && likedBy.includes(userId)
+                     ? 'md-star'
+                     : 'ios-star-outline'
+               }
+               iconSize={25}
+               touchableStyle={{
+                  width: 20,
+                  height: 10,
+                  borderRadius: 10,
+               }}
+               iconColor={
+                  likedBy && likedBy.includes(userId)
+                     ? MAIN_COLOR
+                     : BID_INPUT_BORDER
+               }
+               onIconPressed={onfavouritePressed}
             />
          </View>
          <View style={styles.body}>

@@ -13,6 +13,7 @@ import {
 } from './AuctionTypes';
 import * as firebase from 'firebase';
 import { showMessage } from 'react-native-flash-message';
+import { AsyncStorage } from 'react-native';
 export const getAuctionItems = () => async dispatch => {
    try {
       dispatch({ type: GET_AUCTION_ITEMS_SPINNER });
@@ -41,7 +42,33 @@ export const getAuctionItems = () => async dispatch => {
       dispatch({ type: GET_AUCTION_ITEMS_FAILED });
    }
 };
+export const handleFavoutitrItem = itemId => async (dispatch, getState) => {
+   console.log('favourite');
 
+   const userId = await AsyncStorage.getItem('userId');
+   await firebase
+      .database()
+      .ref(`products/${itemId}/likedBy`)
+      .transaction(oldValue => {
+         if (!oldValue) {
+            return [userId];
+         } else {
+            let userIndex = oldValue.indexOf(userId);
+            console.log('userIndex', userIndex);
+
+            if (userIndex == -1) {
+               return oldValue.push(userId);
+            } else {
+               console.log('old', oldValue);
+               if (oldValue.length == 1) {
+                  return [];
+               } else {
+                  return oldValue.splice(userIndex, 1);
+               }
+            }
+         }
+      });
+};
 export const getItemData = itemId => async (dispatch, getState) => {
    try {
       dispatch({ type: GET_AUCTION_ITEM_SPINNER });
