@@ -14,6 +14,7 @@ import {
 import * as firebase from 'firebase';
 import { showMessage } from 'react-native-flash-message';
 import { AsyncStorage } from 'react-native';
+import { playButtonPress } from '../../../utils/sound';
 export const getAuctionItems = () => async dispatch => {
    try {
       dispatch({ type: GET_AUCTION_ITEMS_SPINNER });
@@ -108,6 +109,8 @@ export const onIncreaseBid = (
    currentPrice,
    initialPrice
 ) => async (dispatch, getState) => {
+   const { amounts } = getState().Auction;
+   const userId = await AsyncStorage.getItem('userId');
    if (bidValue === '') {
       showMessage({ type: 'warning', message: 'you must enter value' });
    } else {
@@ -120,8 +123,42 @@ export const onIncreaseBid = (
                   ? `${+bidValue + +initialPrice}`
                   : `${+bidValue + +currentPrice}`,
          });
+         await firebase
+            .database()
+            .ref(`products/${itemId}/mostPayed`)
+            .transaction(oldValue => {
+               if (!oldValue) {
+                  return [{ userId, bidValue }];
+               } else {
+                  let currentUserPayment = oldValue.findIndex(
+                     item => item.userId == userId
+                  );
+                  console.log(currentUserPayment);
+
+                  if (currentUserPayment > -1) {
+                     let newBidValue =
+                        +oldValue[currentUserPayment].bidValue + +bidValue;
+                     oldValue[currentUserPayment] = {
+                        userId,
+                        bidValue: newBidValue,
+                     };
+                     return [...oldValue];
+                  } else {
+                     return [...oldValue, { userId, bidValue }];
+                  }
+               }
+            });
          await source.update({ lastPaid: bidValue });
-         dispatch({ type: BID_SUCCESS });
+         let selectedAmountIndex = amounts.findIndex(
+            item => item.selected == true
+         );
+         if (selectedAmountIndex > -1) {
+            amounts[selectedAmountIndex].selected = false;
+         } else {
+            return;
+         }
+         await dispatch({ type: BID_SUCCESS, payload: amounts });
+         playButtonPress('bid');
       } catch (e) {
          console.log('bid error', e);
          dispatch({ type: BID_FAILED });

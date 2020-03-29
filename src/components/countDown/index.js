@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { CountdownTimer, FlipNumber } from 'react-native-flip-countdown-timer';
+import { CountdownTimer, FlipNumber } from './flipper';
 import {
    SURFACE_COLOR,
    WHITE_COLOR,
@@ -12,18 +12,25 @@ import moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
 
-const CountDown = ({ timerContainerStyle, date, time, play, ...res }) => {
+const CountDown = ({ timerContainerStyle, date, time, ...res }) => {
    const seconds = moment(date + ' ' + time, 'DD/MM/YYYY hh:mm a').diff(
       moment(),
       'seconds'
    );
-
-   // console.log('timer seconds', seconds, play);
-
+   const [play, setplay] = useState(true);
+   useEffect(() => {
+      const playTimeOut = setTimeout(() => {
+         setplay(false);
+      }, seconds * 1000);
+      return () => {
+         clearTimeout(playTimeOut);
+      };
+   }, []);
+   console.log('timer seconds', seconds, play);
    return (
       <View style={[styles.conntainer, timerContainerStyle]}>
          <CountdownTimer
-            time={play ? seconds : 0}
+            time={seconds}
             play={play}
             wrapperStyle={{ alignItems: 'stretch' }}
             flipNumberProps={{

@@ -5,7 +5,7 @@ if (__DEV__) {
 }
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, AsyncStorage } from 'react-native';
 import APPNavigation from './src/navigation';
 import Splash from './src/screens/Splash';
 import { MAIN_COLOR, SURFACE_COLOR, WHITE_COLOR } from './src/constants/colors';
@@ -17,6 +17,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import * as firebase from 'firebase';
 import * as Font from 'expo-font';
+import { useSelector } from 'react-redux';
 
 YellowBox.ignoreWarnings(['Remote debugger']);
 
@@ -44,8 +45,6 @@ const App = () => {
    const loadFont = async () => {
       await Font.loadAsync({
          Montserrat: require('./src/assets/fonts/Montserrat-Regular.ttf'),
-
-         // Any string can be used as the fontFamily name. Here we use an object to provide more control
          'Montserrat-Regular': {
             uri: require('./src/assets/fonts/Montserrat-Regular.ttf'),
          },

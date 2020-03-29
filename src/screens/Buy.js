@@ -10,6 +10,7 @@ import {
    Keyboard,
    Animated,
    BackHandler,
+   AsyncStorage,
 } from 'react-native';
 import {
    Header,
@@ -20,6 +21,7 @@ import {
    AmountItem,
    IconButton,
    LoaderAndRetry,
+   WinnerModal,
 } from '../components';
 import {
    WHITE_COLOR,
@@ -56,6 +58,7 @@ const Buy = ({ navigation, route }) => {
 
    const [renderList, setrenderList] = useState(false);
    const [disableInput, setdisableInput] = useState(true);
+   const [isWinnerModalVisible, setIsWinnerModalVisible] = useState(false);
    const dispatch = useDispatch();
    const {
       getItemLoading,
@@ -98,14 +101,34 @@ const Buy = ({ navigation, route }) => {
    }, []);
 
    useEffect(() => {
-      let end = moment(finish, 'LT').diff(moment(), 'milliseconds');
+      let end = moment(finish.endTime, 'LT').diff(moment(), 'milliseconds');
 
       let closeAuction = setTimeout(async () => {
+         let userId = await AsyncStorage.getItem('userId');
          await firebase
             .database()
             .ref(`products/${itemId}/paid`)
             .transaction(oldValue => true);
-         navigation.goBack();
+         let currentUserPayment;
+         let highestValue;
+         await firebase
+            .database()
+            .ref(`products/${itemId}/mostPayed`)
+            .once('value', data => {
+               currentUserPayment = data
+                  .val()
+                  .find(item => item.userId == userId);
+               highestValue = Math.max.apply(
+                  Math,
+                  data.val().map(item => +item.bidValue)
+               );
+            });
+         if (+currentUserPayment.bidValue == highestValue) {
+            console.log('the Current user win' + currentUserPayment.userId);
+            setIsWinnerModalVisible(true);
+         } else {
+            navigation.goBack();
+         }
       }, end);
       return () => {
          clearTimeout(closeAuction);
@@ -114,16 +137,9 @@ const Buy = ({ navigation, route }) => {
    }, []);
 
    const onOutPressed = () => {
-      console.log('pressed');
-
-      /* playButtonPress('bid'); */
+      navigation.goBack();
    };
-   const TimeDifferance = calculateTimeDifferance(
-      startDate,
-      startTime,
-      endDate,
-      endTime
-   );
+   console.log(endTime, endDate);
 
    return (
       <Animated.View style={[styles.container]}>
@@ -136,9 +152,8 @@ const Buy = ({ navigation, route }) => {
                {/* count down */}
                <CountDown
                   timerContainerStyle={styles.timerContainerStyle}
-                  play={!paid}
-                  time={endTime}
-                  date={endDate}
+                  time={finish.endTime}
+                  date={finish.endDate}
                />
                <Header
                   containerStyle={{ marginBottom: 0 }}
@@ -337,6 +352,7 @@ const Buy = ({ navigation, route }) => {
                                        initialPrice
                                     )
                                  );
+                                 setrenderList(!renderList);
                               }}
                               loading={bidLoading}
                               spinnerColor={WHITE_COLOR}
@@ -362,7 +378,7 @@ const Buy = ({ navigation, route }) => {
                   <View
                      style={{
                         position: 'absolute',
-                        top: height < 700 ? '37%' : '50%',
+                        top: height < 900 ? '37%' : '50%',
                         start: -width / 6.5,
                      }}>
                      <Price
@@ -372,6 +388,13 @@ const Buy = ({ navigation, route }) => {
                         title={'start price'}
                      />
                   </View>
+                  <WinnerModal
+                     isVisible={isWinnerModalVisible}
+                     onBackdropPress={() => {
+                        setIsWinnerModalVisible(false);
+                        navigation.goBack();
+                     }}
+                  />
                </ScrollView>
             </React.Fragment>
          )}

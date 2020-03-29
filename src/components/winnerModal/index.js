@@ -5,23 +5,25 @@ import { WHITE_COLOR } from '../../constants/colors';
 import { SvgCongratulation } from '../svgCongratulation';
 import { playButtonPress } from '../../utils/sound';
 import { IconButton } from '../IconButton';
+import * as Animatable from 'react-native-animatable';
 const WinnerModal = ({
    isVisible,
    onBackdropPress,
    backdropOpacity,
    onClosePressed,
 }) => {
-   const [ShowText, setShowText] = useState(false);
+   const [zoomType, setzoomType] = useState('');
    var timeOut;
    const onModalShow = () => {
-      // playButtonPress('win');
+      playButtonPress('win');
+
       timeOut = setTimeout(() => {
-         setShowText(true);
+         setzoomType('zoomIn');
       }, 300);
    };
    useEffect(() => {
       return () => {
-         setShowText(false);
+         setzoomType('zoomOut');
          clearTimeout(timeOut);
       };
    }, []);
@@ -44,7 +46,18 @@ const WinnerModal = ({
                   onIconPressed={onBackdropPress}
                />
             </View>
-            <SvgCongratulation onPress={onBackdropPress} sty={{ flex: 1 }} />
+            <Animatable.View
+               style={{ justifyContent: 'center' }}
+               animation={zoomType}
+               useNativeDriver={true}
+               iterationCount={1}
+               duration={1500}
+               easing={'ease-in-cubic'}>
+               <SvgCongratulation
+                  onPress={onBackdropPress}
+                  style={{ flex: 1, alignSelf: 'center' }}
+               />
+            </Animatable.View>
          </Modal>
       </View>
    );

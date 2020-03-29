@@ -36,7 +36,7 @@ const Auctions = ({ navigation, route }) => {
 
    useEffect(() => {
       dispatch(getAuctionItems());
-   }, [cars.length]);
+   }, []);
    const onAUctionItemPressed = (
       key,
       startDate,
@@ -61,7 +61,7 @@ const Auctions = ({ navigation, route }) => {
       } else {
          navigation.navigate('car Detailes', {
             itemId: key,
-            finish: endTime,
+            finish: { endTime, endDate },
             images,
          });
       }

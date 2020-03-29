@@ -42,7 +42,7 @@ const AuctionItem = ({
          activeOpacity={0.85}
          onPress={onItemPressed}>
          <View style={[styles.countDownWraper]}>
-            <CountDown time={startTime} date={startDate} play={!paid} />
+            <CountDown time={startTime} date={startDate} />
          </View>
          {images && (
             <View style={styles.imageContainer}>

@@ -15,6 +15,8 @@ function SvgCongratulation(props) {
          id="prefix__Layer_1"
          x={0}
          y={0}
+         width="400"
+         height="400"
          viewBox="0 0 1080 1080"
          xmlSpace="preserve"
          {...props}>

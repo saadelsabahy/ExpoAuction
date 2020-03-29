@@ -11,7 +11,7 @@ const Profile = () => {
             headerText={'profile'}
             containerStyle={styles.headerContainer}
          />
-         {/* <CustomButton
+         {/*  <CustomButton
             buttonTitle={'showModal'}
             onButtonPressed={() => {
                setWinnerModalVisible(true);

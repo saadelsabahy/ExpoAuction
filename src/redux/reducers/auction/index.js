@@ -16,7 +16,7 @@ const initialState = {
    amounts: [
       { value: 1000, selected: false, disabeld: false },
       { value: 3000, selected: false, disabeld: false },
-      { value: 600, cselected: false, disabeld: false },
+      { value: 6000, cselected: false, disabeld: false },
       { value: 9000, selected: false, disabeld: false },
       { value: 10000, selected: false, disabeld: false },
       { value: 13000, selected: false, disabeld: false },
@@ -83,10 +83,10 @@ export default (state = initialState, { type, payload }) => {
       case BID_SUCCESS:
          return {
             ...state,
+            amounts: payload,
             bidValue: '',
             bidLoading: false,
             bidError: false,
-            amounts: initialState.amounts,
          };
          break;
       case BID_FAILED:

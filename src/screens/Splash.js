@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import SplashImage from '../assets/images/Icon.png';
-import { WHITE_COLOR, SURFACE_COLOR } from '../constants/colors';
+import SplashImage from '../assets/images/nissan.png';
+import { WHITE_COLOR, SURFACE_COLOR, MAIN_COLOR } from '../constants/colors';
 const Splash = () => {
    return (
       <View style={styles.container}>
@@ -14,11 +14,11 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: SURFACE_COLOR,
+      backgroundColor: MAIN_COLOR,
    },
    image: {
-      width: 100,
-      height: 100,
+      width: 400,
+      height: 400,
       resizeMode: 'contain',
    },
 });

@@ -7,6 +7,7 @@ import TabBar from './TabBar';
 import { AsyncStorage } from 'react-native';
 import Splash from '../screens/Splash';
 import Login from '../screens/Login';
+import { BackHandler } from 'react-native';
 
 const APPNavigation = () => {
    const logedIn = useSelector(state => state.Auth.logedIn);
@@ -19,12 +20,15 @@ const APPNavigation = () => {
       var splashTimeOut = setTimeout(async () => {
          setShowSplash(false);
       }, 500);
-
+      BackHandler.addEventListener('hardwareBackPress', handleBackButton);
       return () => {
          clearTimeout(splashTimeOut);
+         BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
       };
-   }, [userToken]);
-
+   }, []);
+   const handleBackButton = () => {
+      return true;
+   };
    return (
       <NavigationContainer>
          {showSplash ? <Splash /> : userToken ? <TabBar /> : <Login />}
