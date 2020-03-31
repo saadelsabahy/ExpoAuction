@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
       padding: 5,
    },
    pickersContainer: {
+      flex: 1,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',

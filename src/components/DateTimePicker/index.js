@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import {
+   View,
+   TouchableOpacity,
+   Platform,
+   StyleSheet,
+   Modal,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MAIN_COLOR } from '../../constants/colors';
 import moment from 'moment';
@@ -31,7 +37,7 @@ const CustomDateTimePicker = ({
                   : 'choose time'
             }
          />
-         {show === currentShow && (
+         {show === currentShow && Platform.OS == 'android' && (
             <DateTimePicker
                testID="dateTimePicker"
                timeZoneOffsetInMinutes={0}
@@ -41,6 +47,19 @@ const CustomDateTimePicker = ({
                onChange={onDateTimePickerChange}
                style={styles.picker}
             />
+         )}
+         {show === currentShow && Platform.OS == 'ios' && (
+            <Modal visible={show === currentShow}>
+               <DateTimePicker
+                  testID="dateTimePicker"
+                  timeZoneOffsetInMinutes={0}
+                  value={selectedDate}
+                  mode={mode}
+                  display="default"
+                  onChange={onDateTimePickerChange}
+                  style={styles.picker}
+               />
+            </Modal>
          )}
       </TouchableOpacity>
    );
@@ -54,8 +73,8 @@ const styles = StyleSheet.create({
       borderColor: MAIN_COLOR,
       marginEnd: 5,
       borderRadius: 5,
-      height: 60,
-      padding: 5,
+      height: 50,
+      paddingHorizontal: 5,
    },
    picker: {
       backgroundColor: MAIN_COLOR,

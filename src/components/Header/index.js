@@ -18,6 +18,7 @@ const Header = ({
    textContainerStyle,
    iconStartType,
    iconEndType,
+   headerTextStyle,
 }) => {
    return (
       <View style={[styles.container, containerStyle]}>
@@ -33,7 +34,9 @@ const Header = ({
                />
             )}
             <View style={[{ flex: 1 }, textContainerStyle]}>
-               <Text style={styles.headerText}>{headerText}</Text>
+               <Text style={[styles.headerText, headerTextStyle]}>
+                  {headerText}
+               </Text>
             </View>
             {iconEnd && (
                <IconButton

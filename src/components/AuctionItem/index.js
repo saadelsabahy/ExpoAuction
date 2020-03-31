@@ -42,7 +42,12 @@ const AuctionItem = ({
          activeOpacity={0.85}
          onPress={onItemPressed}>
          <View style={[styles.countDownWraper]}>
-            <CountDown time={startTime} date={startDate} />
+            <CountDown
+               time={startTime}
+               date={startDate}
+               startDate={endDate}
+               startTime={endTime}
+            />
          </View>
          {images && (
             <View style={styles.imageContainer}>
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
       borderStartWidth: 0,
       height: AUCTION_ITEM_HEIGHT,
       borderRadius: 10,
-      marginBottom: '9%',
+      marginBottom: height / 10,
       marginTop: 10,
    },
    imageContainer: {
@@ -110,8 +115,8 @@ const styles = StyleSheet.create({
    countDownWraper: {
       position: 'absolute',
       zIndex: 100,
-      end: 0,
-      bottom: -height / 20,
+      end: -5,
+      bottom: -height / 10,
    },
 });
 

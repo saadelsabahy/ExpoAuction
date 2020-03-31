@@ -25,20 +25,7 @@ const initialState = {
    getCarsError: false,
    cars: [],
    getItemLoading: false,
-   selectedCarData: {
-      startTime: '',
-      startDate: '',
-      paid: null,
-      nameAndModel: '',
-      initialPrice: '',
-      images: [],
-      endTime: '',
-      endDate: '',
-      subScribers: null,
-      currentPrice: '',
-      lastPaid: null,
-      increaseAmounts: [],
-   },
+   selectedCarData: {},
    getItemError: false,
    bidValue: '',
    bidLoading: false,
@@ -66,7 +53,11 @@ export default (state = initialState, { type, payload }) => {
          return { ...state, getItemLoading: true, getItemError: false };
          break;
       case GET_AUCTION_ITEM_SUCCESS:
-         return { ...state, getItemLoading: false, selectedCarData: payload };
+         return {
+            ...state,
+            getItemLoading: false,
+            selectedCarData: payload,
+         };
          break;
       case GET_AUCTION_ITEM_FAILED:
          return { ...state, getItemLoading: false, getItemError: true };

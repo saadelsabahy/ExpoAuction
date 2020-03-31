@@ -18,7 +18,8 @@ import { playButtonPress } from '../../../utils/sound';
 export const getAuctionItems = () => async dispatch => {
    try {
       dispatch({ type: GET_AUCTION_ITEMS_SPINNER });
-      const source = await firebase.database().ref('/products');
+
+      const source = firebase.database().ref('/products');
       source.on('value', data => {
          if (data.val()) {
             let items = Object.entries(data.val()).map(item => ({
@@ -74,7 +75,7 @@ export const getItemData = itemId => async (dispatch, getState) => {
          .database()
          .ref(`products/${itemId}/subScribers`)
          .transaction(oldValue => oldValue + 1);
-      firebase
+      /*    firebase
          .database()
          .ref(`products/${itemId}`)
          .on('value', async data => {
@@ -84,7 +85,11 @@ export const getItemData = itemId => async (dispatch, getState) => {
                   payload: data.val(),
                });
             }
-         });
+         }); */
+      dispatch({
+         type: GET_AUCTION_ITEM_SUCCESS,
+         payload: {},
+      });
    } catch (e) {
       console.log('get Item Error'.e);
       dispatch({ type: GET_AUCTION_ITEM_FAILED });

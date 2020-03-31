@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
       textTransform: 'uppercase',
    },
    price: {
+      alignSelf: 'center',
+      textAlign: 'center',
       color: WHITE_COLOR,
       textTransform: 'uppercase',
       letterSpacing: 2,

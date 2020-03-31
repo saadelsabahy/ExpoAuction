@@ -35,7 +35,13 @@ const Auctions = ({ navigation, route }) => {
    }));
 
    useEffect(() => {
-      dispatch(getAuctionItems());
+      let isMounted = true;
+      if (isMounted) {
+         dispatch(getAuctionItems());
+      }
+      return () => {
+         isMounted = false;
+      };
    }, []);
    const onAUctionItemPressed = (
       key,
@@ -61,7 +67,7 @@ const Auctions = ({ navigation, route }) => {
       } else {
          navigation.navigate('car Detailes', {
             itemId: key,
-            finish: { endTime, endDate },
+            finish: { endTime, endDate, startDate, startTime },
             images,
          });
       }
@@ -76,6 +82,7 @@ const Auctions = ({ navigation, route }) => {
       dispatch(handleFavoutitrItem(key));
       setRenderList(!renderList);
    };
+
    return (
       <View style={styles.container}>
          <Header
@@ -88,7 +95,7 @@ const Auctions = ({ navigation, route }) => {
          />
 
          <View style={styles.contentContainer}>
-            {getCarsError || getCarsLoading ? (
+            {getCarsLoading || getCarsError ? (
                <LoaderAndRetry
                   loading={getCarsLoading}
                   error={getCarsError}

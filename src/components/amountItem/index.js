@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
       width: '30%',
       height: 60,
       backgroundColor: 'transparent',
-      marginHorizontal: 3,
    },
    selectedContainer: {
       justifyContent: 'center',

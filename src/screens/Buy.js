@@ -11,6 +11,7 @@ import {
    Animated,
    BackHandler,
    AsyncStorage,
+   KeyboardAvoidingView,
 } from 'react-native';
 import {
    Header,
@@ -51,6 +52,9 @@ import * as firebase from 'firebase';
 import { getItemData } from '../redux/actions';
 import moment from 'moment';
 import { calculateTimeDifferance } from '../utils/calculateTimeDifferance';
+import Svg, { Circle, Ellipse } from 'react-native-svg';
+
+import CarInfo from './BuyViews/CarInfo';
 const { width, height } = Dimensions.get('window');
 
 const Buy = ({ navigation, route }) => {
@@ -62,20 +66,6 @@ const Buy = ({ navigation, route }) => {
    const dispatch = useDispatch();
    const {
       getItemLoading,
-      selectedCarData,
-      selectedCarData: {
-         startTime,
-         startDate,
-         paid,
-         nameAndModel,
-         initialPrice,
-         endTime,
-         endDate,
-         subScribers,
-         currentPrice,
-         lastPaid,
-         increaseAmounts,
-      },
       getItemError,
       bidLoading,
       bidError,
@@ -83,7 +73,6 @@ const Buy = ({ navigation, route }) => {
       amounts,
    } = useSelector(state => ({
       getItemLoading: state.Auction.getItemLoading,
-      selectedCarData: state.Auction.selectedCarData,
       getItemError: state.Auction.getItemError,
       bidLoading: state.Auction.bidLoading,
       bidError: state.Auction.bidError,
@@ -91,14 +80,49 @@ const Buy = ({ navigation, route }) => {
       bidValue: state.Auction.bidValue,
       amounts: state.Auction.amounts,
    }));
+   const [
+      {
+         nameAndModel = '',
+         initialPrice = 0,
+         endTime = '',
+         endDate = '',
+         subScribers = 0,
+         currentPrice = 0,
+         lastPaid = 0,
+      },
+      setAuctionData,
+   ] = useState({});
    useEffect(() => {
+      if (!navigation.isFocused) {
+         return;
+      }
+      firebase
+         .database()
+         .ref(`products/${itemId}`)
+         .on('value', async data => {
+            if (data.val()) {
+               setAuctionData(prv => ({ ...prv, ...data.val() }));
+            }
+         });
+
+      return () => {
+         firebase
+            .database()
+            .ref(`products/${itemId}`)
+            .off();
+      };
+   }, [navigation.isFocused]);
+   useEffect(() => {
+      if (!navigation.isFocused) {
+         return;
+      }
       dispatch(getItemData(itemId));
       dispatch(hideTabbar());
       return () => {
          dispatch(decreaseSubscribers(itemId));
          dispatch(showTabbar());
       };
-   }, []);
+   }, [navigation.isFocused]);
 
    useEffect(() => {
       let end = moment(finish.endTime, 'LT').diff(moment(), 'milliseconds');
@@ -139,7 +163,6 @@ const Buy = ({ navigation, route }) => {
    const onOutPressed = () => {
       navigation.goBack();
    };
-   console.log(endTime, endDate);
 
    return (
       <Animated.View style={[styles.container]}>
@@ -154,6 +177,8 @@ const Buy = ({ navigation, route }) => {
                   timerContainerStyle={styles.timerContainerStyle}
                   time={finish.endTime}
                   date={finish.endDate}
+                  startDate={finish.startDate}
+                  startTime={finish.startTime}
                />
                <Header
                   containerStyle={{ marginBottom: 0 }}
@@ -166,102 +191,48 @@ const Buy = ({ navigation, route }) => {
                <ScrollView
                   style={{ flex: 1 }}
                   contentContainerStyle={{ flexGrow: 1 }}>
-                  <Animated.View style={[styles.carInfoContainer]}>
-                     <View
-                        style={{
-                           flex: 1,
-                           flexDirection: 'row',
-                           justifyContent: 'space-between',
-                           marginBottom: 5,
-                        }}>
-                        <View style={{ flex: 1.5 }}>
-                           <CustomSwiper images={images} />
-                        </View>
-                        <View
-                           style={{
-                              height: '100%',
-                              justifyContent: 'center',
-                              paddingHorizontal: 10,
-                           }}>
-                           <IconButton
-                              iconName={'information-outline'}
-                              iconSize={25}
-                              iconColor={WHITE_COLOR}
-                              iconButtonText={'info'}
-                              type={'material-community'}
-                           />
-                           <IconButton
-                              iconName={'account-circle-outline'}
-                              iconSize={25}
-                              iconColor={WHITE_COLOR}
-                              iconButtonText={`${subScribers} `}
-                              type={'material-community'}
-                           />
-                        </View>
-                     </View>
-                     <View
-                        style={{
-                           width: '50%',
-                           alignSelf: 'flex-end',
-                           bottom: 5,
-                           end: 5,
-                        }}>
-                        <Price
-                           title="current price"
-                           price={currentPrice ? currentPrice : initialPrice}
-                           currency={'le'}
-                        />
-
-                        <View
-                           style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              marginVertical: 10,
-                           }}>
-                           <IconButton
-                              iconName={'account-circle-outline'}
-                              iconColor={WHITE_COLOR}
-                              iconSize={25}
-                              type={'material-community'}
-                              touchableStyle={{
-                                 marginVertical: 0,
-                                 width: 25,
-                                 height: 25,
-                              }}
-                           />
-                           <View
-                              style={{
-                                 alignItems: 'center',
-                                 justifyContent: 'center',
-                              }}>
-                              <CustomText
-                                 text={
-                                    `${lastPaid}`.length > 0
-                                       ? `+ ${lastPaid}`
-                                       : '0'
-                                 }
-                                 textStyle={{
-                                    color: WHITE_COLOR,
-                                    textTransform: 'uppercase',
-                                 }}
-                              />
-                              <CustomText
-                                 text={'last paid'}
-                                 textStyle={{
-                                    color: WHITE_COLOR,
-                                    textTransform: 'uppercase',
-                                 }}
-                              />
-                           </View>
-                        </View>
-                     </View>
-                  </Animated.View>
-                  {/* payment ....... */}
                   <View
                      style={{
-                        flex: 1,
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                     }}>
+                     <Svg
+                        viewBox="0 0 100 100"
+                        width="100%"
+                        height="100%"
+                        style={{
+                           backgroundColor: 'trnsparent',
+                        }}>
+                        <Ellipse
+                           cx="100"
+                           cy="0"
+                           rx="80"
+                           ry="62"
+                           fill={MAIN_COLOR}
+                           stroke={WHITE_COLOR}
+                           strokeWidth="1"
+                        />
+                     </Svg>
+                  </View>
+                  <Animated.View style={[styles.carInfoContainer]}>
+                     <CarInfo
+                        currentPrice={currentPrice}
+                        initialPrice={initialPrice}
+                        images={images}
+                        lastPaid={lastPaid}
+                        subScribers={subScribers}
+                     />
+                  </Animated.View>
+                  {/* payment ....... */}
+
+                  <View
+                     style={{
+                        height: '40%',
+                        width,
                         alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        paddingVertical: 8,
                      }}>
                      <View style={styles.content}>
                         <View style={styles.amountsContainer}>
@@ -276,7 +247,6 @@ const Buy = ({ navigation, route }) => {
                               }}
                               numColumns={3}
                               keyExtractor={(item, index) => `${index}`}
-                              // columnWrapperStyle={{ marginVertical: 10 }}
                               extraData={renderList}
                               renderItem={({
                                  item: { selected, value },
@@ -293,7 +263,14 @@ const Buy = ({ navigation, route }) => {
                                     ) => {
                                        if (!selected) {
                                           setdisableInput(false);
-                                          dispatch(changeBidValue(`${value}`));
+                                          dispatch(
+                                             onIncreaseBid(
+                                                `${value}`,
+                                                itemId,
+                                                currentPrice,
+                                                initialPrice
+                                             )
+                                          );
                                           let previousSelected = amounts.findIndex(
                                              item => item['selected'] == true
                                           );
@@ -374,20 +351,6 @@ const Buy = ({ navigation, route }) => {
                      </View>
                   </View>
 
-                  {/* initial price */}
-                  <View
-                     style={{
-                        position: 'absolute',
-                        top: height < 900 ? '37%' : '50%',
-                        start: -width / 6.5,
-                     }}>
-                     <Price
-                        priceContainerStyle={{ backgroundColor: 'transparent' }}
-                        price={initialPrice}
-                        currency={'le'}
-                        title={'start price'}
-                     />
-                  </View>
                   <WinnerModal
                      isVisible={isWinnerModalVisible}
                      onBackdropPress={() => {
@@ -407,21 +370,12 @@ const styles = StyleSheet.create({
       backgroundColor: SURFACE_COLOR,
    },
    carInfoContainer: {
-      height: height / 2.5,
+      height: '56%',
       width,
-      backgroundColor: MAIN_COLOR,
-      borderBottomStartRadius: width - 10,
-      borderBottomColor: WHITE_COLOR,
-      borderStartColor: WHITE_COLOR,
-      borderWidth: 2,
-      borderTopWidth: 0,
-      borderEndWidth: 0,
    },
    content: {
       flex: 1,
       width: '90%',
-      alignItems: 'center',
-      justifyContent: 'space-around',
    },
    amountsContainer: {
       width: '100%',
@@ -431,7 +385,6 @@ const styles = StyleSheet.create({
    buyWraper: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 5,
    },
    inputContainerStyle: {
       borderWidth: 0,

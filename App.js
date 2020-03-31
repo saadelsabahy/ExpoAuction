@@ -5,7 +5,14 @@ if (__DEV__) {
 }
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, AsyncStorage } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   StatusBar,
+   AsyncStorage,
+   SafeAreaView,
+} from 'react-native';
 import APPNavigation from './src/navigation';
 import Splash from './src/screens/Splash';
 import { MAIN_COLOR, SURFACE_COLOR, WHITE_COLOR } from './src/constants/colors';
@@ -54,7 +61,7 @@ const App = () => {
    return (
       fontLoaded && (
          <Provider store={store}>
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                <StatusBar backgroundColor={MAIN_COLOR} />
                <APPNavigation />
                <FlashMessage
@@ -63,7 +70,7 @@ const App = () => {
                   duration={1000}
                   textStyle={styles.flashText}
                />
-            </View>
+            </SafeAreaView>
          </Provider>
       )
    );
