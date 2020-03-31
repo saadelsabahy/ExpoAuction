@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
       fontSize: 13,
       marginHorizontal: 3,
       color: WHITE_COLOR,
+      textAlign: 'left',
    },
 });
 

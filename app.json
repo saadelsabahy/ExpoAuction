@@ -1,34 +1,39 @@
 {
-   "expo": {
-      "name": "Auction",
-      "slug": "Auction",
-      "primaryColor": "#CD1531",
-      "privacy": "public",
-      "sdkVersion": "36.0.0",
-      "platforms": ["ios", "android", "web"],
-      "version": "1.0.0",
-      "orientation": "portrait",
-      "icon": "./assets/icon.png",
-      "splash": {
-         "backgroundColor": "#CD1531",
-
-         "resizeMode": "contain",
-
-         "image": "./src/assets/images/nissan.png"
-      },
-      "updates": {
-         "fallbackToCacheTimeout": 0
-      },
-      "assetBundlePatterns": ["**/*"],
-      "ios": {
-         "supportsTablet": true
-      },
-      "androidStatusBar": {
-         "backgroundColor": "#CD1531"
-      },
-      "android": {
-         "package": "com.evision.Auction",
-         "versionCode": 1
-      }
-   }
+  "expo": {
+    "name": "Auction",
+    "slug": "Auction",
+    "primaryColor": "#CD1531",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#CD1531",
+      "resizeMode": "contain",
+      "image": "./src/assets/images/nissan.png"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#CD1531"
+    },
+    "android": {
+      "package": "com.evision.Auction",
+      "versionCode": 1
+    },
+    "description": ""
+  }
 }

@@ -7,7 +7,7 @@ import {
    Modal,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { MAIN_COLOR } from '../../constants/colors';
+import { MAIN_COLOR, WHITE_COLOR } from '../../constants/colors';
 import moment from 'moment';
 import { CustomText } from '../customText';
 const CustomDateTimePicker = ({
@@ -77,7 +77,9 @@ const styles = StyleSheet.create({
       paddingHorizontal: 5,
    },
    picker: {
+      flex: 1,
       backgroundColor: MAIN_COLOR,
+      color: WHITE_COLOR,
    },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
    View,
    Text,
@@ -11,7 +11,6 @@ import {
    Animated,
    BackHandler,
    AsyncStorage,
-   KeyboardAvoidingView,
 } from 'react-native';
 import {
    Header,
@@ -55,10 +54,13 @@ import { calculateTimeDifferance } from '../utils/calculateTimeDifferance';
 import Svg, { Circle, Ellipse } from 'react-native-svg';
 
 import CarInfo from './BuyViews/CarInfo';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 const { width, height } = Dimensions.get('window');
 
 const Buy = ({ navigation, route }) => {
    const { itemId, finish, images } = route.params;
+   const inputRef = useRef('');
 
    const [renderList, setrenderList] = useState(false);
    const [disableInput, setdisableInput] = useState(true);
@@ -139,13 +141,17 @@ const Buy = ({ navigation, route }) => {
             .database()
             .ref(`products/${itemId}/mostPayed`)
             .once('value', data => {
-               currentUserPayment = data
-                  .val()
-                  .find(item => item.userId == userId);
-               highestValue = Math.max.apply(
-                  Math,
-                  data.val().map(item => +item.bidValue)
-               );
+               if (data.val()) {
+                  currentUserPayment = data
+                     .val()
+                     .find(item => item.userId == userId);
+                  highestValue = Math.max.apply(
+                     Math,
+                     data.val().map(item => +item.bidValue)
+                  );
+               } else {
+                  navigation.goBack();
+               }
             });
          if (+currentUserPayment.bidValue == highestValue) {
             console.log('the Current user win' + currentUserPayment.userId);
@@ -158,7 +164,7 @@ const Buy = ({ navigation, route }) => {
          clearTimeout(closeAuction);
          dispatch(clearOldItemData());
       };
-   }, []);
+   }, [navigation.isFocused]);
 
    const onOutPressed = () => {
       navigation.goBack();
@@ -188,9 +194,14 @@ const Buy = ({ navigation, route }) => {
                   onIconStartPressed={() => navigation.goBack()}
                />
                {/* car info ....... */}
-               <ScrollView
+
+               <KeyboardAwareScrollView
                   style={{ flex: 1 }}
-                  contentContainerStyle={{ flexGrow: 1 }}>
+                  contentContainerStyle={{ flexGrow: 1 }}
+                  extraHeight={0}
+                  enableOnAndroid
+                  enableAutomaticScroll={false}
+                  extraScrollHeight={10}>
                   <View
                      style={{
                         position: 'absolute',
@@ -208,7 +219,7 @@ const Buy = ({ navigation, route }) => {
                            cx="100"
                            cy="0"
                            rx="80"
-                           ry="62"
+                           ry="60"
                            fill={MAIN_COLOR}
                            stroke={WHITE_COLOR}
                            strokeWidth="1"
@@ -222,6 +233,8 @@ const Buy = ({ navigation, route }) => {
                         images={images}
                         lastPaid={lastPaid}
                         subScribers={subScribers}
+                        navigation={navigation}
+                        carName={nameAndModel}
                      />
                   </Animated.View>
                   {/* payment ....... */}
@@ -232,7 +245,6 @@ const Buy = ({ navigation, route }) => {
                         width,
                         alignItems: 'center',
                         justifyContent: 'flex-end',
-                        paddingVertical: 8,
                      }}>
                      <View style={styles.content}>
                         <View style={styles.amountsContainer}>
@@ -244,6 +256,7 @@ const Buy = ({ navigation, route }) => {
                                  flexGrow: 1,
                                  justifyContent: 'center',
                                  alignItems: 'center',
+                                 paddingTop: 10,
                               }}
                               numColumns={3}
                               keyExtractor={(item, index) => `${index}`}
@@ -271,6 +284,7 @@ const Buy = ({ navigation, route }) => {
                                                 initialPrice
                                              )
                                           );
+                                          setdisableInput(true);
                                           let previousSelected = amounts.findIndex(
                                              item => item['selected'] == true
                                           );
@@ -288,7 +302,7 @@ const Buy = ({ navigation, route }) => {
                                           amounts[index][
                                              'selected'
                                           ] = !selected;
-                                          dispatch(changeBidValue(''));
+                                          inputRef.current = '';
                                           setrenderList(!renderList);
                                           return;
                                        }
@@ -300,6 +314,10 @@ const Buy = ({ navigation, route }) => {
                         </View>
                         <View style={styles.buyWraper}>
                            <CustomInput
+                              inputContainerStyle={styles.inputContainerStyle}
+                              contentContainerStyle={{
+                                 width: '70%',
+                              }}
                               iconLeftName="arrow-up"
                               iconLeftType={'material-community'}
                               placeholder="Other amount"
@@ -307,15 +325,9 @@ const Buy = ({ navigation, route }) => {
                               placeholderTextColor={WHITE_COLOR}
                               keyboardType={'number-pad'}
                               returnKeyType={'done'}
-                              onChangeText={text =>
-                                 dispatch(changeBidValue(text))
-                              }
-                              value={bidValue}
                               editable={disableInput}
-                              contentContainerStyle={{
-                                 flex: 0,
-                                 width: '70%',
-                              }}
+                              ref={inputRef}
+                              onChangeText={text => (inputRef.current = text)}
                            />
                            <CustomButton
                               buttonTitle="bid"
@@ -323,13 +335,16 @@ const Buy = ({ navigation, route }) => {
                               onButtonPressed={async () => {
                                  dispatch(
                                     onIncreaseBid(
-                                       bidValue,
+                                       inputRef.current,
                                        itemId,
                                        currentPrice,
                                        initialPrice
                                     )
                                  );
                                  setrenderList(!renderList);
+                                 console.log(inputRef);
+
+                                 inputRef.current = '';
                               }}
                               loading={bidLoading}
                               spinnerColor={WHITE_COLOR}
@@ -358,7 +373,7 @@ const Buy = ({ navigation, route }) => {
                         navigation.goBack();
                      }}
                   />
-               </ScrollView>
+               </KeyboardAwareScrollView>
             </React.Fragment>
          )}
       </Animated.View>
@@ -370,8 +385,9 @@ const styles = StyleSheet.create({
       backgroundColor: SURFACE_COLOR,
    },
    carInfoContainer: {
-      height: '56%',
+      height: '55%',
       width,
+      marginBottom: 15,
    },
    content: {
       flex: 1,
@@ -383,6 +399,7 @@ const styles = StyleSheet.create({
    },
 
    buyWraper: {
+      flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
    },

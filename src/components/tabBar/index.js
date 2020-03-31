@@ -20,7 +20,7 @@ const tabs = [
       iconName: 'gavel',
    },
    {
-      iconName: 'restore-clock',
+      iconName: 'plus',
    },
 
    {

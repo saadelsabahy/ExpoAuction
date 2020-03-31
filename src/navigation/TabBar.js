@@ -23,6 +23,7 @@ import {
    clearKeyBoardListners,
 } from '../redux/actions';
 import { createStackNavigator } from '@react-navigation/stack';
+import Info from '../screens/CarInfo';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,6 +35,7 @@ const AuctionStack = ({ route }) => {
          }}>
          <Stack.Screen name="Auction" component={Auctions} />
          <Stack.Screen name="car Detailes" component={Buy} />
+         <Stack.Screen name="info" component={Info} />
       </Stack.Navigator>
    );
 };

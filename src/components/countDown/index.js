@@ -21,8 +21,6 @@ const CountDown = ({
    startTime,
    ...res
 }) => {
-   console.log(date, time, startDate, startTime);
-
    const seconds = moment(date + ' ' + time, 'DD/MM/YYYY hh:mm a').diff(
       moment(),
       'seconds'
@@ -34,8 +32,6 @@ const CountDown = ({
          'seconds'
       )
    );
-
-   console.log(barInterval);
 
    const [play, setplay] = useState(true);
    useEffect(() => {
@@ -70,7 +66,7 @@ const CountDown = ({
             play={play}
             wrapperStyle={{ alignItems: 'stretch' }}
             flipNumberProps={{
-               size: 20,
+               size: width / 3 / 6,
             }}
          />
          <View style={styles.unitContainer}>
@@ -94,7 +90,7 @@ const CountDown = ({
 };
 const styles = StyleSheet.create({
    conntainer: {
-      width: width / 2.5,
+      width: width / 2,
       backgroundColor: '#414141',
       height: height / 8,
       alignItems: 'center',

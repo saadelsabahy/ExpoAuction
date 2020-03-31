@@ -19,7 +19,7 @@ import {
 import { calculateTimeDifferance } from '../utils/calculateTimeDifferance';
 import { showMessage } from 'react-native-flash-message';
 import moment from 'moment';
-
+import * as firebase from 'firebase';
 const Auctions = ({ navigation, route }) => {
    const [refreshing, setRefreshing] = useState(false);
    const [renderList, setRenderList] = useState(false);
@@ -41,6 +41,10 @@ const Auctions = ({ navigation, route }) => {
       }
       return () => {
          isMounted = false;
+         firebase
+            .database()
+            .ref('/products')
+            .off();
       };
    }, []);
    const onAUctionItemPressed = (
@@ -107,6 +111,7 @@ const Auctions = ({ navigation, route }) => {
                      style={{ flex: 1 }}
                      contentContainerStyle={{
                         flexGrow: 1,
+                        paddingBottom: 20,
                      }}
                      extraData={renderList}
                      data={cars}

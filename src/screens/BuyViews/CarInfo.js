@@ -13,6 +13,8 @@ const CarInfo = ({
    images,
    lastPaid,
    subScribers,
+   navigation,
+   carName,
 }) => {
    return (
       <View style={{ flex: 1 }}>
@@ -39,6 +41,12 @@ const CarInfo = ({
                   iconColor={WHITE_COLOR}
                   iconButtonText={'info'}
                   type={'material-community'}
+                  onIconPressed={() =>
+                     navigation.navigate('info', {
+                        image: images[0].uri,
+                        carName,
+                     })
+                  }
                />
                <IconButton
                   iconName={'account-circle-outline'}
@@ -69,7 +77,7 @@ const CarInfo = ({
                   currency={'le'}
                   title={'start price'}
                   priceContainerStyle={{
-                     width: '50%',
+                     width: '70%',
                      backgroundColor: 'transparent',
                   }}
                />

@@ -31,6 +31,7 @@
       "react-native-flash-message": "^0.1.15",
       "react-native-flip-countdown-timer": "^0.0.3",
       "react-native-gesture-handler": "~1.5.0",
+      "react-native-keyboard-aware-scroll-view": "^0.9.1",
       "react-native-modal": "^11.5.4",
       "react-native-progress-bar-animated": "^1.0.6",
       "react-native-reanimated": "~1.4.0",

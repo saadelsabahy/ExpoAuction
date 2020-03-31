@@ -29,6 +29,8 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 let INITIAL_TIME = new Date();
 const Sell = () => {
    const dispatch = useDispatch();
@@ -120,9 +122,13 @@ const Sell = () => {
    return (
       <View style={styles.container}>
          <Header headerText={'Sell'} containerStyle={styles.headerContainer} />
-         <ScrollView
+
+         <KeyboardAwareScrollView
             style={{ flex: 1 }}
-            contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
+            contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}
+            enableAutomaticScroll
+            extraHeight={0}
+            extraScrollHeight={0}>
             <CustomInput
                iconLeftName="ios-car"
                iconLeftType={'ionicon'}
@@ -189,7 +195,7 @@ const Sell = () => {
                }
                spinnerColor={WHITE_COLOR}
             />
-         </ScrollView>
+         </KeyboardAwareScrollView>
       </View>
    );
 };

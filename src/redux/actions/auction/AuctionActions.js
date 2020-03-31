@@ -115,6 +115,7 @@ export const onIncreaseBid = (
    initialPrice
 ) => async (dispatch, getState) => {
    const { amounts } = getState().Auction;
+
    const userId = await AsyncStorage.getItem('userId');
    if (bidValue === '') {
       showMessage({ type: 'warning', message: 'you must enter value' });
@@ -128,6 +129,8 @@ export const onIncreaseBid = (
                   ? `${+bidValue + +initialPrice}`
                   : `${+bidValue + +currentPrice}`,
          });
+         dispatch({ type: BID_SUCCESS, payload: amounts });
+         playButtonPress('bid');
          await firebase
             .database()
             .ref(`products/${itemId}/mostPayed`)
@@ -162,8 +165,7 @@ export const onIncreaseBid = (
          } else {
             return;
          }
-         await dispatch({ type: BID_SUCCESS, payload: amounts });
-         playButtonPress('bid');
+         dispatch({ type: BID_SUCCESS, payload: amounts });
       } catch (e) {
          console.log('bid error', e);
          dispatch({ type: BID_FAILED });

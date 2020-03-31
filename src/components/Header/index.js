@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
       fontSize: 20,
       textTransform: 'capitalize',
       letterSpacing: 1,
+      textAlign: 'left',
    },
 });
 

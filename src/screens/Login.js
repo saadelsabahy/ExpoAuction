@@ -1,12 +1,5 @@
 import React, { useState, useRef } from 'react';
-import {
-   View,
-   Text,
-   StyleSheet,
-   ScrollView,
-   Dimensions,
-   Image,
-} from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import {
    WHITE_COLOR,
    MAIN_COLOR,
@@ -17,6 +10,7 @@ import { Header, CustomInput, CustomButton } from '../components';
 import { useDispatch, useSelector } from 'react-redux';
 import { onLoginPressed, onAuthInputsChange } from '../redux/actions';
 import Svg, { Circle } from 'react-native-svg';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 const { width, height } = Dimensions.get('window');
 const Login = () => {
    const [showPassword, setshowPassword] = useState(true);
@@ -58,12 +52,13 @@ const Login = () => {
             />
          </Svg>
 
-         <ScrollView
+         <KeyboardAwareScrollView
             style={{ flex: 1 }}
             contentContainerStyle={{
                flexGrow: 1,
                alignItems: 'center',
-            }}>
+            }}
+            enableAutomaticScroll>
             <View style={styles.inputsContainer}>
                <CustomInput
                   placeholder={'Enter your email'}
@@ -113,7 +108,7 @@ const Login = () => {
                loading={loginLoading}
                spinnerColor={WHITE_COLOR}
             />
-         </ScrollView>
+         </KeyboardAwareScrollView>
       </View>
    );
 };
@@ -130,7 +125,7 @@ const styles = StyleSheet.create({
    inputWrapper: {
       flex: 0,
       width: '100%',
-      marginVertical: height > 700 ? '2%' : '.1%',
+      marginVertical: height > 800 ? '2%' : '.1%',
    },
    input: { height: 50 },
    inputBorder: {
