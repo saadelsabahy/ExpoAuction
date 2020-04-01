@@ -82,7 +82,7 @@ const CountDown = ({
             borderColor={SURFACE_COLOR}
             underlyingColor={SURFACE_COLOR}
             backgroundColor={
-               barInterval > 80 ? 'red' : barInterval > 50 ? 'orange' : 'green'
+               barInterval > 80 ? 'green' : barInterval > 50 ? 'orange' : 'red'
             }
          />
       </View>

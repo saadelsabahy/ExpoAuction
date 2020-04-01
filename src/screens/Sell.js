@@ -30,6 +30,8 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { showMessage } from 'react-native-flash-message';
+import moment from 'moment';
 
 let INITIAL_TIME = new Date();
 const Sell = () => {
@@ -76,7 +78,26 @@ const Sell = () => {
                   setStartDate(selectedDate);
                   break;
                case 'endTime':
-                  setEndTime(selectedDate);
+                  const isTimeValid = moment(selectedDate).isSameOrAfter(
+                     moment(startTime)
+                  );
+
+                  if (isTimeValid) {
+                     setEndTime(selectedDate);
+                  } else {
+                     showMessage({
+                        type: 'warning',
+                        message: 'You Must Select Time In the Future',
+                        duration: 4000,
+                     });
+                     setcurrentShow('');
+                     setShowMode(null);
+                     changedFields.pop(currentShow);
+                     dispatch(
+                        updateChangedDates([...changedDates, ...changedFields])
+                     );
+                  }
+
                   break;
                case 'endDate':
                   setEndDate(selectedDate);
@@ -107,7 +128,7 @@ const Sell = () => {
       let result = await ImagePicker.launchImageLibraryAsync({
          mediaTypes: ImagePicker.MediaTypeOptions.Images,
          aspect: [4, 3],
-         quality: 1,
+         quality: 0.6,
          allowsMultipleSelection: true,
          base64: true,
       });
@@ -132,7 +153,7 @@ const Sell = () => {
             <CustomInput
                iconLeftName="ios-car"
                iconLeftType={'ionicon'}
-               placeholder="Enter car name and model"
+               placeholder="Enter Car Name And Model"
                onChangeText={carName =>
                   dispatch(onInputsChange('nameAndModel', carName))
                }
@@ -142,13 +163,15 @@ const Sell = () => {
             <CustomInput
                iconLeftName="price-ribbon"
                iconLeftType={'entypo'}
-               placeholder={'Enter start price'}
+               placeholder={'Enter Initial Price'}
                onChangeText={initialPrice =>
                   dispatch(onInputsChange('initialPrice', initialPrice))
                }
                value={initialPrice}
                inputContainerStyle={{ height: 50 }}
-               keyboardType={'number-pad'}
+               keyboardType={'numeric'}
+               textContentType="telephoneNumber"
+               maxLength={7}
             />
             <AuctionDuration
                startDate={startDate}

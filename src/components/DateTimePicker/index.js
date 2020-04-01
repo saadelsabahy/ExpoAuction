@@ -58,6 +58,8 @@ const CustomDateTimePicker = ({
                   display="default"
                   onChange={onDateTimePickerChange}
                   style={styles.picker}
+                  timeZoneOffsetInMinutes={120}
+                  textColor="#000"
                />
             </Modal>
          )}
@@ -78,8 +80,7 @@ const styles = StyleSheet.create({
    },
    picker: {
       flex: 1,
-      backgroundColor: MAIN_COLOR,
-      color: WHITE_COLOR,
+      justifyContent: 'center',
    },
 });
 

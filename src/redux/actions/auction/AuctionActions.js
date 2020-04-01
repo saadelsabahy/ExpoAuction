@@ -15,6 +15,7 @@ import * as firebase from 'firebase';
 import { showMessage } from 'react-native-flash-message';
 import { AsyncStorage } from 'react-native';
 import { playButtonPress } from '../../../utils/sound';
+import moment from 'moment';
 export const getAuctionItems = () => async dispatch => {
    try {
       dispatch({ type: GET_AUCTION_ITEMS_SPINNER });
@@ -27,7 +28,7 @@ export const getAuctionItems = () => async dispatch => {
                key: item[0],
             }));
 
-            let filterd = items.filter(item => item.paid !== true);
+            let filterd = items.filter(item => !item.paid);
             dispatch({
                type: GET_AUCTION_ITEMS_SUCCESS,
                payload: filterd.length > 0 ? filterd : [],
@@ -112,16 +113,21 @@ export const onIncreaseBid = (
    bidValue,
    itemId,
    currentPrice,
-   initialPrice
+   initialPrice,
+   inputRef
 ) => async (dispatch, getState) => {
    const { amounts } = getState().Auction;
 
    const userId = await AsyncStorage.getItem('userId');
-   if (bidValue === '') {
-      showMessage({ type: 'warning', message: 'you must enter value' });
+   if (bidValue === '' || bidValue == null || isNaN(+bidValue)) {
+      showMessage({
+         type: 'warning',
+         message: 'you must enter correct numeric value',
+      });
    } else {
       try {
-         dispatch({ type: BID_LOADING });
+         await dispatch({ type: BID_LOADING });
+         inputRef.current.clear();
          let source = firebase.database().ref(`products/${itemId}`);
          await source.update({
             currentPrice:
@@ -136,9 +142,10 @@ export const onIncreaseBid = (
             .ref(`products/${itemId}/mostPayed`)
             .transaction(oldValue => {
                if (!oldValue) {
-                  return [{ userId, bidValue }];
+                  return [userId];
                } else {
-                  let currentUserPayment = oldValue.findIndex(
+                  return [...oldValue, userId];
+                  /* let currentUserPayment = oldValue.findIndex(
                      item => item.userId == userId
                   );
                   console.log(currentUserPayment);
@@ -153,7 +160,7 @@ export const onIncreaseBid = (
                      return [...oldValue];
                   } else {
                      return [...oldValue, { userId, bidValue }];
-                  }
+                  } */
                }
             });
          await source.update({ lastPaid: bidValue });

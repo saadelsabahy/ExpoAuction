@@ -57,11 +57,27 @@ import CarInfo from './BuyViews/CarInfo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get('window');
+const arabicNumbers = {
+   '٠': 0,
+   '۱': 1,
+   '۲': 2,
+   '٣': 3,
+   '٤': 4,
+   '٥': 5,
+   '٦': 6,
+   '٧': 6,
+   '٨': 8,
+   '٩': 9,
+};
+
+function getNumOrDefault(num) {
+   return arabicNumbers[num] || num;
+}
 
 const Buy = ({ navigation, route }) => {
    const { itemId, finish, images } = route.params;
-   const inputRef = useRef('');
-
+   const inputRef = useRef(null);
+   const inputTextRef = useRef(null);
    const [renderList, setrenderList] = useState(false);
    const [disableInput, setdisableInput] = useState(true);
    const [isWinnerModalVisible, setIsWinnerModalVisible] = useState(false);
@@ -136,25 +152,19 @@ const Buy = ({ navigation, route }) => {
             .ref(`products/${itemId}/paid`)
             .transaction(oldValue => true);
          let currentUserPayment;
-         let highestValue;
+
          await firebase
             .database()
             .ref(`products/${itemId}/mostPayed`)
             .once('value', data => {
                if (data.val()) {
-                  currentUserPayment = data
-                     .val()
-                     .find(item => item.userId == userId);
-                  highestValue = Math.max.apply(
-                     Math,
-                     data.val().map(item => +item.bidValue)
-                  );
+                  currentUserPayment = data.val()[data.val().length - 1];
                } else {
                   navigation.goBack();
                }
             });
-         if (+currentUserPayment.bidValue == highestValue) {
-            console.log('the Current user win' + currentUserPayment.userId);
+         if (currentUserPayment == userId) {
+            console.log('the Current user win' + currentUserPayment);
             setIsWinnerModalVisible(true);
          } else {
             navigation.goBack();
@@ -281,7 +291,8 @@ const Buy = ({ navigation, route }) => {
                                                 `${value}`,
                                                 itemId,
                                                 currentPrice,
-                                                initialPrice
+                                                initialPrice,
+                                                inputRef
                                              )
                                           );
                                           setdisableInput(true);
@@ -302,7 +313,7 @@ const Buy = ({ navigation, route }) => {
                                           amounts[index][
                                              'selected'
                                           ] = !selected;
-                                          inputRef.current = '';
+                                          inputTextRef.current = '';
                                           setrenderList(!renderList);
                                           return;
                                        }
@@ -323,11 +334,20 @@ const Buy = ({ navigation, route }) => {
                               placeholder="Other amount"
                               inputContainerStyle={styles.inputContainerStyle}
                               placeholderTextColor={WHITE_COLOR}
-                              keyboardType={'number-pad'}
+                              keyboardType={'numeric'}
+                              textContentType="postalCode"
                               returnKeyType={'done'}
                               editable={disableInput}
-                              ref={inputRef}
-                              onChangeText={text => (inputRef.current = text)}
+                              refrence={r => {
+                                 inputRef.current = r;
+                              }}
+                              onChangeText={text => {
+                                 text[text.length - 1] = getNumOrDefault(
+                                    text[-1]
+                                 );
+                                 return (inputTextRef.current = text);
+                              }}
+                              maxLength={5}
                            />
                            <CustomButton
                               buttonTitle="bid"
@@ -335,16 +355,15 @@ const Buy = ({ navigation, route }) => {
                               onButtonPressed={async () => {
                                  dispatch(
                                     onIncreaseBid(
-                                       inputRef.current,
+                                       inputTextRef.current,
                                        itemId,
                                        currentPrice,
-                                       initialPrice
+                                       initialPrice,
+                                       inputRef
                                     )
                                  );
+                                 inputTextRef.current = '';
                                  setrenderList(!renderList);
-                                 console.log(inputRef);
-
-                                 inputRef.current = '';
                               }}
                               loading={bidLoading}
                               spinnerColor={WHITE_COLOR}

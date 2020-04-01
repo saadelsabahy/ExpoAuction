@@ -24,6 +24,8 @@ const CarDetailes = ({
    onfavouritePressed,
    userId,
 }) => {
+   console.log(endDate);
+
    return (
       <View style={styles.detailesContainer}>
          <View style={styles.header}>
@@ -37,9 +39,8 @@ const CarDetailes = ({
                }
                iconSize={25}
                touchableStyle={{
-                  width: 20,
-                  height: 10,
-                  borderRadius: 10,
+                  width: 25,
+                  height: 25,
                }}
                iconColor={
                   likedBy && likedBy.includes(userId)
@@ -80,7 +81,7 @@ const CarDetailes = ({
                   color={BID_INPUT_BORDER}
                />
                <CustomText
-                  text={moment(endDate, 'DDD/MM/YYYY').format('ll')}
+                  text={moment(endDate, 'DD/MM/YYYY').format('ll')}
                   textStyle={styles.timeText}
                />
             </View>

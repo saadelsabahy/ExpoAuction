@@ -21,7 +21,7 @@ import { CustomButton } from '../button';
 import { IconButton } from '../IconButton';
 import { CountDown } from '../countDown';
 const { width, height } = Dimensions.get('window');
-export const AUCTION_ITEM_HEIGHT = 140;
+export const AUCTION_ITEM_HEIGHT = 150;
 const AuctionItem = ({
    onItemPressed,
    images,
@@ -37,10 +37,35 @@ const AuctionItem = ({
    userId,
 }) => {
    return (
-      <TouchableOpacity
-         style={styles.container}
-         activeOpacity={0.85}
-         onPress={onItemPressed}>
+      <>
+         <TouchableOpacity
+            style={styles.container}
+            activeOpacity={0.85}
+            onPress={onItemPressed}>
+            {images && (
+               <View style={styles.imageContainer}>
+                  <Image
+                     style={styles.image}
+                     source={{
+                        uri: images[0].uri,
+                     }}
+                  />
+               </View>
+            )}
+            <CarDetailes
+               title={carName}
+               paid={paid}
+               initialPrice={initialPrice}
+               endDate={endDate}
+               endTime={endTime}
+               startDate={startDate}
+               startTime={startTime}
+               carName={carName}
+               onfavouritePressed={onfavouritePressed}
+               likedBy={likedBy}
+               userId={userId}
+            />
+         </TouchableOpacity>
          <View style={[styles.countDownWraper]}>
             <CountDown
                time={startTime}
@@ -49,30 +74,7 @@ const AuctionItem = ({
                startTime={endTime}
             />
          </View>
-         {images && (
-            <View style={styles.imageContainer}>
-               <Image
-                  style={styles.image}
-                  source={{
-                     uri: images[0].uri,
-                  }}
-               />
-            </View>
-         )}
-         <CarDetailes
-            title={carName}
-            paid={paid}
-            initialPrice={initialPrice}
-            endDate={endDate}
-            endTime={endTime}
-            startDate={startDate}
-            startTime={startTime}
-            carName={carName}
-            onfavouritePressed={onfavouritePressed}
-            likedBy={likedBy}
-            userId={userId}
-         />
-      </TouchableOpacity>
+      </>
    );
 };
 const styles = StyleSheet.create({
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
       borderStartWidth: 0,
       height: AUCTION_ITEM_HEIGHT,
       borderRadius: 10,
-      marginBottom: height / 10,
+      /*  marginBottom: height / 9, */
       marginTop: 10,
    },
    imageContainer: {
@@ -113,10 +115,11 @@ const styles = StyleSheet.create({
       marginEnd: 2,
    },
    countDownWraper: {
-      position: 'absolute',
+      alignSelf: 'flex-end',
       zIndex: 100,
-      end: -5,
-      bottom: -height / 9,
+      top: -5,
+      end: 10,
+      /* bottom: height > 730 ? -height / 8 : -height / 9, */
    },
 });
 

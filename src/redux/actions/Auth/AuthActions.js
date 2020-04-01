@@ -64,7 +64,6 @@ const LoginSuccess = async (dispatch, { user }) => {
       ['userToken', user.refreshToken],
       ['userId', user.uid],
    ]);
-   Alerting('success', 'login success');
 };
 const LoginFailed = dispatch => {
    console.log('login error');

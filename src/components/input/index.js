@@ -33,6 +33,7 @@ const CustomInput = ({
    contentContainerStyle,
    iconLeftType,
    iconRightType,
+   refrence,
    ...res
 }) => {
    const dispatch = useDispatch();
@@ -58,6 +59,7 @@ const CustomInput = ({
                placeholder={placeholder}
                style={[styles.input, inputStyle]}
                placeholderTextColor={WHITE_COLOR}
+               ref={refrence}
                {...res}
             />
             {IconRightName && (

@@ -35,18 +35,9 @@ const Auctions = ({ navigation, route }) => {
    }));
 
    useEffect(() => {
-      let isMounted = true;
-      if (isMounted) {
-         dispatch(getAuctionItems());
-      }
-      return () => {
-         isMounted = false;
-         firebase
-            .database()
-            .ref('/products')
-            .off();
-      };
-   }, []);
+      dispatch(getAuctionItems());
+      return () => {};
+   }, [navigation.isFocused]);
    const onAUctionItemPressed = (
       key,
       startDate,
